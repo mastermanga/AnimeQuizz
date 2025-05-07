@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Classement des Animes</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
     h1 { text-align: center; }
-    .anime-list { display: flex; flex-direction: column; align-items: center; }
+    .anime-container { display: flex; flex-direction: column; align-items: center; }
     .anime-item { 
       display: flex; 
       align-items: center; 
@@ -17,64 +16,85 @@
       margin: 10px; 
       border-radius: 8px; 
       box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-      cursor: move; 
       width: 60%;
     }
-    .anime-item img { width: 50px; height: 50px; margin-right: 15px; border-radius: 5px; }
-    .anime-item p { font-size: 16px; margin: 0; }
+    .anime-item img { width: 100px; height: 100px; margin-right: 15px; border-radius: 5px; }
+    .anime-item p { font-size: 18px; margin: 0; }
     .rank-button { margin-top: 20px; text-align: center; }
+    .ranking-input { width: 50px; padding: 5px; font-size: 16px; }
+    .anime-list { list-style-type: none; padding: 0; }
+    .anime-list li { padding: 5px; font-size: 16px; }
   </style>
 </head>
 <body>
   <h1>Classement des Animes</h1>
 
-  <div class="anime-list" id="anime-list">
-    <!-- Liste des animes -->
-    <div class="anime-item" data-id="1">
-      <img src="https://upload.wikimedia.org/wikipedia/en/6/6f/Naruto_Logo.svg" alt="Naruto">
-      <p>Naruto</p>
+  <div class="anime-container" id="anime-container">
+    <div class="anime-item" id="anime-item">
+      <!-- Anime à classer ici -->
+      <img id="anime-img" src="" alt="Anime">
+      <p id="anime-name">Nom de l'Anime</p>
     </div>
-    <div class="anime-item" data-id="2">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/43/One_Piece_logo.svg" alt="One Piece">
-      <p>One Piece</p>
-    </div>
-    <div class="anime-item" data-id="3">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Attack_on_Titan_logo.svg" alt="Attack on Titan">
-      <p>Attack on Titan</p>
-    </div>
-    <div class="anime-item" data-id="4">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/My_Hero_Academia_Logo.svg" alt="My Hero Academia">
-      <p>My Hero Academia</p>
-    </div>
-    <div class="anime-item" data-id="5">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Demon_Slayer_Logo.svg" alt="Demon Slayer">
-      <p>Demon Slayer</p>
-    </div>
-  </div>
 
-  <div class="rank-button">
-    <button onclick="showRank()">Voir le classement</button>
+    <div id="rank-section">
+      <label for="rank-input">Attribuer un rang (1 à 10): </label>
+      <input type="number" id="rank-input" class="ranking-input" min="1" max="10" />
+      <button onclick="assignRank()">Attribuer</button>
+    </div>
   </div>
 
   <div id="result"></div>
 
-  <script>
-    // Initialisation du drag-and-drop avec SortableJS
-    const animeList = document.getElementById('anime-list');
-    const sortable = new Sortable(animeList, {
-      animation: 150, // Animation pour le déplacement
-      ghostClass: 'sortable-ghost', // Classe pour les éléments pendant le déplacement
-    });
+  <div class="rank-button">
+    <button onclick="showRanking()">Voir le classement final</button>
+  </div>
 
-    // Fonction pour afficher le classement après réorganisation
-    function showRank() {
-      const sortedAnimes = [];
-      const items = document.querySelectorAll('.anime-item');
-      items.forEach(item => {
-        sortedAnimes.push(item.querySelector('p').innerText);
-      });
-      document.getElementById('result').innerHTML = `<h2>Classement Final</h2><ol>${sortedAnimes.map(anime => `<li>${anime}</li>`).join('')}</ol>`;
+  <script>
+    const animeList = [
+      { name: "Naruto", img: "https://cdn.myanimelist.net/images/anime/11/731.jpg" },
+      { name: "One Piece", img: "https://cdn.myanimelist.net/images/anime/6/732.jpg" },
+      { name: "Attack on Titan", img: "https://cdn.myanimelist.net/images/anime/10/732.jpg" },
+      { name: "My Hero Academia", img: "https://cdn.myanimelist.net/images/anime/8/730.jpg" },
+      { name: "Demon Slayer", img: "https://cdn.myanimelist.net/images/anime/13/93353.jpg" },
+      // Ajouter plus d'animes ici
+    ];
+
+    let currentIndex = 0;
+    let rankings = new Array(10).fill(null); // Liste vide de 10 rangs à remplir
+
+    function displayAnime() {
+      if (currentIndex < animeList.length) {
+        const anime = animeList[currentIndex];
+        document.getElementById("anime-name").textContent = anime.name;
+        document.getElementById("anime-img").src = anime.img;
+        document.getElementById("rank-input").value = ''; // Réinitialise l'input
+      } else {
+        document.getElementById("rank-section").style.display = "none"; // Cache le champ de classement
+        document.getElementById("anime-container").innerHTML = "<h2>Classement terminé !</h2>";
+      }
     }
+
+    function assignRank() {
+      const rank = document.getElementById("rank-input").value;
+      if (rank < 1 || rank > 10 || rankings[rank - 1] !== null) {
+        alert("Veuillez attribuer un rang valide entre 1 et 10, et chaque rang doit être unique.");
+        return;
+      }
+
+      // Attribuer le rang à cet anime
+      rankings[rank - 1] = animeList[currentIndex].name;
+
+      currentIndex++; // Passer à l'anime suivant
+      displayAnime(); // Afficher l'anime suivant
+    }
+
+    function showRanking() {
+      const rankingDisplay = rankings.map((anime, index) => `<li>Rang ${index + 1}: ${anime}</li>`).join('');
+      document.getElementById("result").innerHTML = `<h2>Classement final</h2><ul class="anime-list">${rankingDisplay}</ul>`;
+    }
+
+    // Initialiser l'affichage du premier anime
+    displayAnime();
   </script>
 </body>
 </html>
