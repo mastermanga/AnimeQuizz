@@ -63,7 +63,7 @@
   </div>
 
   <div class="rank-button">
-    <button onclick="startNewRanking()">Nouveau classement</button>
+    <button id="new-ranking-btn" onclick="startNewRanking()" style="display: none;">Nouveau classement</button>
   </div>
 
   <script>
@@ -106,6 +106,7 @@
       } else {
         document.getElementById("rank-section").style.display = "none"; // Cache les boutons de classement
         document.getElementById("anime-container").innerHTML = "<h2>Classement terminé !</h2>";
+        document.getElementById("new-ranking-btn").style.display = "block"; // Affiche le bouton "Nouveau classement"
       }
     }
 
@@ -159,6 +160,7 @@
 
       // Réafficher le premier anime
       document.getElementById("rank-section").style.display = "block";
+      document.getElementById("new-ranking-btn").style.display = "none"; // Cacher le bouton de nouveau classement
       displayAnime();
     }
 
