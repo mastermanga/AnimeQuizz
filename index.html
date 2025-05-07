@@ -11,6 +11,7 @@
     .rank-select { margin-top: 10px; }
     button { padding: 10px 20px; font-size: 16px; margin-top: 20px; }
     #results { margin-top: 30px; }
+    iframe { border-radius: 10px; }
   </style>
 </head>
 <body>
@@ -36,7 +37,7 @@
       block.className = "video-block";
       block.innerHTML = `
         <iframe width="100%" height="200" src="${video.url}" frameborder="0" allowfullscreen></iframe>
-        <label for="rank-${video.id}">Notez cet opening (1 = meilleur, 10 = moins bon):</label>
+        <label for="rank-${video.id}">Notez cet opening (1 = meilleur, 10 = moins bon) :</label>
         <select id="rank-${video.id}" name="rank-${video.id}" class="rank-select">
           ${[...Array(10).keys()].map(i => `<option value="${i+1}">${i+1}</option>`).join('')}
         </select>
@@ -65,3 +66,4 @@
   </script>
 </body>
 </html>
+
