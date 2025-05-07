@@ -67,21 +67,40 @@
   </div>
 
   <script>
-    let animeList = [
+    // Liste complète d'animes avec leurs noms et images
+    const allAnimes = [
       { name: "Naruto", img: "https://cdn.myanimelist.net/images/anime/11/731.jpg" },
       { name: "One Piece", img: "https://cdn.myanimelist.net/images/anime/6/732.jpg" },
       { name: "Attack on Titan", img: "https://cdn.myanimelist.net/images/anime/10/732.jpg" },
       { name: "My Hero Academia", img: "https://cdn.myanimelist.net/images/anime/8/730.jpg" },
       { name: "Demon Slayer", img: "https://cdn.myanimelist.net/images/anime/13/93353.jpg" },
-      // Ajouter plus d'animes ici
+      { name: "Fullmetal Alchemist", img: "https://cdn.myanimelist.net/images/anime/7/730.jpg" },
+      { name: "Dragon Ball Z", img: "https://cdn.myanimelist.net/images/anime/12/730.jpg" },
+      { name: "Death Note", img: "https://cdn.myanimelist.net/images/anime/13/93353.jpg" },
+      { name: "Tokyo Ghoul", img: "https://cdn.myanimelist.net/images/anime/8/750.jpg" },
+      { name: "Sword Art Online", img: "https://cdn.myanimelist.net/images/anime/11/755.jpg" },
+      { name: "Bleach", img: "https://cdn.myanimelist.net/images/anime/8/780.jpg" },
+      { name: "Neon Genesis Evangelion", img: "https://cdn.myanimelist.net/images/anime/10/970.jpg" },
+      { name: "Fairy Tail", img: "https://cdn.myanimelist.net/images/anime/9/970.jpg" },
+      { name: "One Punch Man", img: "https://cdn.myanimelist.net/images/anime/12/815.jpg" },
+      { name: "Hunter x Hunter", img: "https://cdn.myanimelist.net/images/anime/9/970.jpg" }
+      // Ajoute autant d'animes que tu souhaites
     ];
 
     let currentIndex = 0;
     let rankings = new Array(10).fill(null); // Liste vide de 10 rangs à remplir
+    let selectedAnimes = []; // Liste pour les animes choisis
 
+    // Fonction pour tirer au hasard 10 animes
+    function getRandomAnimes() {
+      let shuffledAnimes = shuffle(allAnimes.slice()); // Créer une copie mélangée de la liste
+      selectedAnimes = shuffledAnimes.slice(0, 10); // Prendre les 10 premiers animes
+    }
+
+    // Afficher un anime à classer
     function displayAnime() {
-      if (currentIndex < animeList.length) {
-        const anime = animeList[currentIndex];
+      if (currentIndex < selectedAnimes.length) {
+        const anime = selectedAnimes[currentIndex];
         document.getElementById("anime-name").textContent = anime.name;
         document.getElementById("anime-img").src = anime.img;
       } else {
@@ -90,6 +109,7 @@
       }
     }
 
+    // Attribuer un rang à un anime
     function assignRank(rank) {
       if (rankings[rank - 1] !== null) {
         alert("Ce rang a déjà été attribué !");
@@ -97,7 +117,7 @@
       }
 
       // Attribuer le rang à cet anime
-      rankings[rank - 1] = animeList[currentIndex].name;
+      rankings[rank - 1] = selectedAnimes[currentIndex].name;
 
       // Désactiver le bouton de classement
       document.getElementById(`rank-${rank}`).disabled = true;
@@ -109,6 +129,7 @@
       displayAnime(); // Afficher l'anime suivant
     }
 
+    // Mettre à jour le récapitulatif du classement
     function updateRankingList() {
       const rankingList = document.getElementById("ranking-list");
       rankingList.innerHTML = ''; // Réinitialiser la liste
@@ -120,9 +141,9 @@
       });
     }
 
+    // Fonction pour redémarrer un nouveau classement
     function startNewRanking() {
-      // Mélanger la liste des animes pour que ce soit aléatoire
-      animeList = shuffle(animeList);
+      getRandomAnimes(); // Choisir 10 nouveaux animes aléatoirement
 
       // Réinitialiser les variables de classement
       currentIndex = 0;
@@ -141,7 +162,7 @@
       displayAnime();
     }
 
-    // Fonction pour mélanger aléatoirement la liste des animes
+    // Fonction pour mélanger aléatoirement un tableau
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -151,7 +172,7 @@
     }
 
     // Initialiser l'affichage du premier anime
-    displayAnime();
+    startNewRanking();
   </script>
 </body>
 </html>
