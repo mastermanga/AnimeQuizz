@@ -18,7 +18,13 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
       width: 60%;
     }
-    .anime-item img { width: 100px; height: 100px; margin-right: 15px; border-radius: 5px; }
+    .anime-item img { 
+      width: 200px; 
+      height: 200px; 
+      margin-right: 20px; 
+      border-radius: 10px; 
+      object-fit: cover; 
+    }
     .anime-item p { font-size: 18px; margin: 0; }
     .rank-button { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
     .rank-button button { margin: 5px; padding: 10px 20px; font-size: 16px; }
@@ -40,7 +46,6 @@
 
   <div class="anime-container" id="anime-container">
     <div class="anime-item" id="anime-item">
-      <!-- Anime à classer ici -->
       <img id="anime-img" src="" alt="Anime">
       <p id="anime-name">Nom de l'Anime</p>
     </div>
@@ -88,7 +93,6 @@
       while (selectedAnimes.length < 10) {
         const randomIndex = Math.floor(Math.random() * animeList.length);
         const anime = animeList[randomIndex];
-
         if (!selectedAnimes.includes(anime)) {
           selectedAnimes.push(anime);
         }
@@ -135,7 +139,15 @@
 
       rankings.forEach((anime, index) => {
         if (anime) {
-          rankingList.innerHTML += `<li>Rang ${index + 1}: ${anime}</li>`;
+          const foundAnime = selectedAnimes.find(a => a.title === anime);
+          if (foundAnime) {
+            rankingList.innerHTML += `
+              <li style="display: flex; align-items: center; margin-bottom: 10px;">
+                <img src="${foundAnime.image_url}" alt="${foundAnime.title}" 
+                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+                <span>Rang ${index + 1}: ${foundAnime.title}</span>
+              </li>`;
+          }
         }
       });
     }
@@ -143,8 +155,6 @@
     // Fonction pour redémarrer un nouveau classement
     function startNewRanking() {
       getRandomAnimes(); // Choisir 10 nouveaux animes aléatoirement
-
-      // Réinitialiser les variables de classement
       currentIndex = 0;
       rankings = new Array(10).fill(null);
 
@@ -153,19 +163,21 @@
         document.getElementById(`rank-${i}`).disabled = false;
       }
 
-      // Réinitialiser le récapitulatif du classement
       updateRankingList();
 
-      // Réafficher le premier anime
       document.getElementById("rank-section").style.display = "block";
-      document.getElementById("new-ranking-btn").style.display = "none"; // Cacher le bouton de nouveau classement
+      document.getElementById("new-ranking-btn").style.display = "none";
+      document.getElementById("anime-container").innerHTML = `
+        <div class="anime-item" id="anime-item">
+          <img id="anime-img" src="" alt="Anime">
+          <p id="anime-name">Nom de l'Anime</p>
+        </div>`;
       displayAnime();
     }
 
-    // Initialiser l'affichage du premier anime
     window.onload = async function() {
-      await loadAnimes();  // Charger les animes depuis le fichier JSON
-      startNewRanking();   // Démarrer le classement
+      await loadAnimes();
+      startNewRanking();
     };
   </script>
 </body>
