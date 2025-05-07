@@ -3,66 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Classement des Openings d'Anime</title>
+  <title>Classement des Animes</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f2f2f2; }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
     h1 { text-align: center; }
-    .video-block { background: white; border-radius: 10px; padding: 10px; margin-bottom: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .rank-select { margin-top: 10px; }
-    button { padding: 10px 20px; font-size: 16px; margin-top: 20px; }
-    #results { margin-top: 30px; }
-    iframe { border-radius: 10px; }
+    .anime-list { display: flex; flex-direction: column; align-items: center; }
+    .anime-item { 
+      display: flex; 
+      align-items: center; 
+      background: white; 
+      padding: 15px; 
+      margin: 10px; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+      cursor: move; 
+      width: 60%;
+    }
+    .anime-item img { width: 50px; height: 50px; margin-right: 15px; border-radius: 5px; }
+    .anime-item p { font-size: 16px; margin: 0; }
+    .rank-button { margin-top: 20px; text-align: center; }
   </style>
 </head>
 <body>
-  <h1>Classe les Openings d'Anime</h1>
-  <form id="rankingForm">
-    <div id="videoList"></div>
-    <button type="submit">Afficher le classement</button>
-  </form>
-  <div id="results"></div>
+  <h1>Classement des Animes</h1>
+
+  <div class="anime-list" id="anime-list">
+    <!-- Liste des animes -->
+    <div class="anime-item" data-id="1">
+      <img src="https://via.placeholder.com/50x50?text=Anime1" alt="Anime 1">
+      <p>Anime 1</p>
+    </div>
+    <div class="anime-item" data-id="2">
+      <img src="https://via.placeholder.com/50x50?text=Anime2" alt="Anime 2">
+      <p>Anime 2</p>
+    </div>
+    <div class="anime-item" data-id="3">
+      <img src="https://via.placeholder.com/50x50?text=Anime3" alt="Anime 3">
+      <p>Anime 3</p>
+    </div>
+    <div class="anime-item" data-id="4">
+      <img src="https://via.placeholder.com/50x50?text=Anime4" alt="Anime 4">
+      <p>Anime 4</p>
+    </div>
+    <div class="anime-item" data-id="5">
+      <img src="https://via.placeholder.com/50x50?text=Anime5" alt="Anime 5">
+      <p>Anime 5</p>
+    </div>
+  </div>
+
+  <div class="rank-button">
+    <button onclick="showRank()">Voir le classement</button>
+  </div>
+
+  <div id="result"></div>
 
   <script>
-    const videos = [
-      { id: 1, url: "https://www.youtube.com/embed/5_8HAmErwys?start=10&end=30" },
-      { id: 2, url: "https://www.youtube.com/embed/fh2_zmv4bdI?start=10&end=30" },
-      { id: 3, url: "https://www.youtube.com/embed/5h4sEtgWAhk?start=15&end=35" },
-      { id: 4, url: "https://www.youtube.com/embed/T7hMNDe7Mvs?start=5&end=25" },
-      { id: 5, url: "https://www.youtube.com/embed/_h_zWqJd5JY?start=15&end=35" }
-    ];
-
-    const container = document.getElementById("videoList");
-    videos.forEach(video => {
-      const block = document.createElement("div");
-      block.className = "video-block";
-      block.innerHTML = `
-        <iframe width="100%" height="200" src="${video.url}" frameborder="0" allowfullscreen></iframe>
-        <label for="rank-${video.id}">Notez cet opening (1 = meilleur, 10 = moins bon) :</label>
-        <select id="rank-${video.id}" name="rank-${video.id}" class="rank-select">
-          ${[...Array(10).keys()].map(i => `<option value="${i+1}">${i+1}</option>`).join('')}
-        </select>
-      `;
-      container.appendChild(block);
+    // Initialisation du drag-and-drop avec SortableJS
+    const animeList = document.getElementById('anime-list');
+    const sortable = new Sortable(animeList, {
+      animation: 150, // Animation pour le déplacement
+      ghostClass: 'sortable-ghost', // Classe pour les éléments pendant le déplacement
     });
 
-    document.getElementById("rankingForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const ranked = videos.map(video => {
-        return {
-          id: video.id,
-          rank: parseInt(formData.get(`rank-${video.id}`))
-        };
+    // Fonction pour afficher le classement après réorganisation
+    function showRank() {
+      const sortedAnimes = [];
+      const items = document.querySelectorAll('.anime-item');
+      items.forEach(item => {
+        sortedAnimes.push(item.querySelector('p').innerText);
       });
-
-      ranked.sort((a, b) => a.rank - b.rank);
-
-      const resultDiv = document.getElementById("results");
-      resultDiv.innerHTML = '<h2>Classement Final</h2>' +
-        '<ol>' +
-        ranked.map(r => `<li>Opening #${r.id} (Note: ${r.rank})</li>`).join('') +
-        '</ol>';
-    });
+      document.getElementById('result').innerHTML = `<h2>Classement Final</h2><ol>${sortedAnimes.map(anime => `<li>${anime}</li>`).join('')}</ol>`;
+    }
   </script>
 </body>
 </html>
