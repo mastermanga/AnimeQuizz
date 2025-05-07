@@ -28,7 +28,6 @@
     .anime-item p { font-size: 18px; margin: 0; }
     .rank-button { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
     .rank-button button { margin: 5px; padding: 10px 20px; font-size: 16px; }
-    .ranking-input { width: 50px; padding: 5px; font-size: 16px; }
     .anime-list { list-style-type: none; padding: 0; font-size: 16px; }
     .anime-list li { padding: 5px; }
     .ranking-container { margin-right: 20px; flex: 1; }
@@ -39,9 +38,7 @@
 <body>
   <div class="ranking-container">
     <h2>Récapitulatif du Classement</h2>
-    <ul id="ranking-list" class="anime-list">
-      <!-- Les classements seront affichés ici -->
-    </ul>
+    <ul id="ranking-list" class="anime-list"></ul>
   </div>
 
   <div class="anime-container" id="anime-container">
@@ -72,12 +69,11 @@
   </div>
 
   <script>
-    let animeList = []; // Liste des animes à remplir
+    let animeList = [];
     let currentIndex = 0;
-    let rankings = new Array(10).fill(null); // Liste vide de 10 rangs à remplir
-    let selectedAnimes = []; // Liste pour les animes choisis
+    let rankings = new Array(10).fill(null);
+    let selectedAnimes = [];
 
-    // Charger les données depuis le fichier JSON
     async function loadAnimes() {
       const response = await fetch('top_animes.json');
       if (response.ok) {
@@ -87,7 +83,6 @@
       }
     }
 
-    // Fonction pour tirer au hasard 10 animes
     function getRandomAnimes() {
       selectedAnimes = [];
       while (selectedAnimes.length < 10) {
@@ -99,79 +94,65 @@
       }
     }
 
-    // Afficher un anime à classer
     function displayAnime() {
       if (currentIndex < selectedAnimes.length) {
         const anime = selectedAnimes[currentIndex];
         document.getElementById("anime-name").textContent = anime.title;
         document.getElementById("anime-img").src = anime.image_url;
       } else {
-        document.getElementById("rank-section").style.display = "none"; // Cache les boutons de classement
-        document.getElementById("anime-container").innerHTML = "<h2>Classement terminé !</h2>";
-        document.getElementById("new-ranking-btn").style.display = "block"; // Affiche le bouton "Nouveau classement"
+        document.getElementById("rank-section").style.display = "none";
+        document.getElementById("anime-item").style.display = "none";
+        document.getElementById("new-ranking-btn").style.display = "block";
       }
     }
 
-    // Attribuer un rang à un anime
     function assignRank(rank) {
       if (rankings[rank - 1] !== null) {
         alert("Ce rang a déjà été attribué !");
         return;
       }
 
-      // Attribuer le rang à cet anime
       rankings[rank - 1] = selectedAnimes[currentIndex].title;
-
-      // Désactiver le bouton de classement
       document.getElementById(`rank-${rank}`).disabled = true;
-
-      // Ajouter l'anime au récapitulatif
       updateRankingList();
-
-      currentIndex++; // Passer à l'anime suivant
-      displayAnime(); // Afficher l'anime suivant
+      currentIndex++;
+      displayAnime();
     }
 
-    // Mettre à jour le récapitulatif du classement
     function updateRankingList() {
       const rankingList = document.getElementById("ranking-list");
-      rankingList.innerHTML = ''; // Réinitialiser la liste
+      rankingList.innerHTML = '';
 
-      rankings.forEach((anime, index) => {
-        if (anime) {
-          const foundAnime = selectedAnimes.find(a => a.title === anime);
-          if (foundAnime) {
-            rankingList.innerHTML += `
-              <li style="display: flex; align-items: center; margin-bottom: 10px;">
-                <img src="${foundAnime.image_url}" alt="${foundAnime.title}" 
-                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
-                <span>Rang ${index + 1}: ${foundAnime.title}</span>
-              </li>`;
-          }
+      rankings.forEach((animeTitle, index) => {
+        if (animeTitle) {
+          const anime = selectedAnimes.find(a => a.title === animeTitle);
+          rankingList.innerHTML += `
+            <li style="display: flex; align-items: center; margin-bottom: 10px;">
+              <img src="${anime.image_url}" alt="${anime.title}" 
+                   style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+              <span>Rang ${index + 1}: ${anime.title}</span>
+            </li>`;
         }
       });
     }
 
-    // Fonction pour redémarrer un nouveau classement
     function startNewRanking() {
-      getRandomAnimes(); // Choisir 10 nouveaux animes aléatoirement
+      getRandomAnimes();
       currentIndex = 0;
       rankings = new Array(10).fill(null);
 
-      // Réactiver les boutons
       for (let i = 1; i <= 10; i++) {
         document.getElementById(`rank-${i}`).disabled = false;
       }
 
       updateRankingList();
 
+      document.getElementById("anime-item").style.display = "flex";
       document.getElementById("rank-section").style.display = "block";
       document.getElementById("new-ranking-btn").style.display = "none";
-      document.getElementById("anime-container").innerHTML = `
-        <div class="anime-item" id="anime-item">
-          <img id="anime-img" src="" alt="Anime">
-          <p id="anime-name">Nom de l'Anime</p>
-        </div>`;
+      document.getElementById("anime-name").textContent = "Nom de l'Anime";
+      document.getElementById("anime-img").src = "";
+
       displayAnime();
     }
 
