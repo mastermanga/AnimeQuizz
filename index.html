@@ -67,42 +67,63 @@
   </div>
 
   <script>
-    // Liste complète d'animes avec leurs noms et images
-    const allAnimes = [
-      { name: "Naruto", img: "https://cdn.myanimelist.net/images/anime/11/731.jpg" },
-      { name: "One Piece", img: "https://cdn.myanimelist.net/images/anime/6/732.jpg" },
-      { name: "Attack on Titan", img: "https://cdn.myanimelist.net/images/anime/10/732.jpg" },
-      { name: "My Hero Academia", img: "https://cdn.myanimelist.net/images/anime/8/730.jpg" },
-      { name: "Demon Slayer", img: "https://cdn.myanimelist.net/images/anime/13/93353.jpg" },
-      { name: "Fullmetal Alchemist", img: "https://cdn.myanimelist.net/images/anime/7/730.jpg" },
-      { name: "Dragon Ball Z", img: "https://cdn.myanimelist.net/images/anime/12/730.jpg" },
-      { name: "Death Note", img: "https://cdn.myanimelist.net/images/anime/13/93353.jpg" },
-      { name: "Tokyo Ghoul", img: "https://cdn.myanimelist.net/images/anime/8/750.jpg" },
-      { name: "Sword Art Online", img: "https://cdn.myanimelist.net/images/anime/11/755.jpg" },
-      { name: "Bleach", img: "https://cdn.myanimelist.net/images/anime/8/780.jpg" },
-      { name: "Neon Genesis Evangelion", img: "https://cdn.myanimelist.net/images/anime/10/970.jpg" },
-      { name: "Fairy Tail", img: "https://cdn.myanimelist.net/images/anime/9/970.jpg" },
-      { name: "One Punch Man", img: "https://cdn.myanimelist.net/images/anime/12/815.jpg" },
-      { name: "Hunter x Hunter", img: "https://cdn.myanimelist.net/images/anime/9/970.jpg" }
+    // Liste des titres d'animes
+    const animeTitles = [
+      "Naruto",
+      "One Piece",
+      "Attack on Titan",
+      "My Hero Academia",
+      "Demon Slayer",
+      "Fullmetal Alchemist",
+      "Dragon Ball Z",
+      "Death Note",
+      "Tokyo Ghoul",
+      "Sword Art Online",
+      "Bleach",
+      "Neon Genesis Evangelion",
+      "Fairy Tail",
+      "One Punch Man",
+      "Hunter x Hunter"
       // Ajoute autant d'animes que tu souhaites
     ];
 
     let currentIndex = 0;
     let rankings = new Array(10).fill(null); // Liste vide de 10 rangs à remplir
     let selectedAnimes = []; // Liste pour les animes choisis
+    let animeImages = []; // Liste pour stocker les images des animes
 
-    // Fonction pour tirer au hasard 10 animes
-    function getRandomAnimes() {
-      let shuffledAnimes = shuffle(allAnimes.slice()); // Créer une copie mélangée de la liste
-      selectedAnimes = shuffledAnimes.slice(0, 10); // Prendre les 10 premiers animes
+    // Fonction pour tirer au hasard 10 animes et récupérer les images via l'API Jikan
+    async function getRandomAnimes() {
+      selectedAnimes = [];
+      animeImages = [];
+      while (selectedAnimes.length < 10) {
+        const randomIndex = Math.floor(Math.random() * animeTitles.length);
+        const animeTitle = animeTitles[randomIndex];
+
+        // Vérifier si l'anime a déjà été sélectionné
+        if (!selectedAnimes.includes(animeTitle)) {
+          selectedAnimes.push(animeTitle);
+
+          // Appel à l'API Jikan pour récupérer les informations sur l'anime
+          const animeData = await fetch(`https://api.jikan.moe/v4/anime?q=${animeTitle}&limit=1`);
+          const jsonData = await animeData.json();
+
+          if (jsonData.data && jsonData.data[0]) {
+            animeImages.push(jsonData.data[0].images.jpg.image_url);
+          } else {
+            animeImages.push(""); // Si pas d'image disponible, on laisse vide
+          }
+        }
+      }
     }
 
     // Afficher un anime à classer
     function displayAnime() {
       if (currentIndex < selectedAnimes.length) {
-        const anime = selectedAnimes[currentIndex];
-        document.getElementById("anime-name").textContent = anime.name;
-        document.getElementById("anime-img").src = anime.img;
+        const animeName = selectedAnimes[currentIndex];
+        const animeImage = animeImages[currentIndex];
+        document.getElementById("anime-name").textContent = animeName;
+        document.getElementById("anime-img").src = animeImage || 'https://via.placeholder.com/100'; // Image par défaut si aucune n'est trouvée
       } else {
         document.getElementById("rank-section").style.display = "none"; // Cache les boutons de classement
         document.getElementById("anime-container").innerHTML = "<h2>Classement terminé !</h2>";
@@ -118,7 +139,7 @@
       }
 
       // Attribuer le rang à cet anime
-      rankings[rank - 1] = selectedAnimes[currentIndex].name;
+      rankings[rank - 1] = selectedAnimes[currentIndex];
 
       // Désactiver le bouton de classement
       document.getElementById(`rank-${rank}`).disabled = true;
@@ -143,8 +164,8 @@
     }
 
     // Fonction pour redémarrer un nouveau classement
-    function startNewRanking() {
-      getRandomAnimes(); // Choisir 10 nouveaux animes aléatoirement
+    async function startNewRanking() {
+      await getRandomAnimes(); // Choisir 10 nouveaux animes aléatoirement
 
       // Réinitialiser les variables de classement
       currentIndex = 0;
@@ -162,15 +183,6 @@
       document.getElementById("rank-section").style.display = "block";
       document.getElementById("new-ranking-btn").style.display = "none"; // Cacher le bouton de nouveau classement
       displayAnime();
-    }
-
-    // Fonction pour mélanger aléatoirement un tableau
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Échanger les éléments
-      }
-      return array;
     }
 
     // Initialiser l'affichage du premier anime
