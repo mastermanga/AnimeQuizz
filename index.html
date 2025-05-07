@@ -67,59 +67,20 @@
   </div>
 
   <script>
-    // Liste des animes avec noms et images
-    const animeList = [
-      { name: "Naruto", image: "https://cdn.myanimelist.net/images/anime/13/17488.jpg" },
-      { name: "One Piece", image: "https://cdn.myanimelist.net/images/anime/6/7321.jpg" },
-      { name: "Attack on Titan", image: "https://cdn.myanimelist.net/images/anime/13/75648.jpg" },
-      { name: "My Hero Academia", image: "https://cdn.myanimelist.net/images/anime/7/87181.jpg" },
-      { name: "Demon Slayer", image: "https://cdn.myanimelist.net/images/anime/1719/105059.jpg" },
-      { name: "Fullmetal Alchemist", image: "https://cdn.myanimelist.net/images/anime/12/27269.jpg" },
-      { name: "Dragon Ball Z", image: "https://cdn.myanimelist.net/images/anime/1311/94551.jpg" },
-      { name: "Death Note", image: "https://cdn.myanimelist.net/images/anime/13/75973.jpg" },
-      { name: "Tokyo Ghoul", image: "https://cdn.myanimelist.net/images/anime/6/76003.jpg" },
-      { name: "Sword Art Online", image: "https://cdn.myanimelist.net/images/anime/10/47347.jpg" },
-      { name: "Bleach", image: "https://cdn.myanimelist.net/images/anime/5/12977.jpg" },
-      { name: "Neon Genesis Evangelion", image: "https://cdn.myanimelist.net/images/anime/4/78974.jpg" },
-      { name: "Fairy Tail", image: "https://cdn.myanimelist.net/images/anime/3/43963.jpg" },
-      { name: "One Punch Man", image: "https://cdn.myanimelist.net/images/anime/6/78956.jpg" },
-      { name: "Hunter x Hunter", image: "https://cdn.myanimelist.net/images/anime/7/101945.jpg" },
-      { name: "JoJo's Bizarre Adventure", image: "https://cdn.myanimelist.net/images/anime/5/77817.jpg" },
-      { name: "Mob Psycho 100", image: "https://cdn.myanimelist.net/images/anime/4/74828.jpg" },
-      { name: "Re:Zero", image: "https://cdn.myanimelist.net/images/anime/2/78799.jpg" },
-      { name: "Steins;Gate", image: "https://cdn.myanimelist.net/images/anime/9/30987.jpg" },
-      { name: "Attack on Titan: The Final Season", image: "https://cdn.myanimelist.net/images/anime/1604/112764.jpg" },
-      { name: "Konosuba", image: "https://cdn.myanimelist.net/images/anime/13/80888.jpg" },
-      { name: "No Game No Life", image: "https://cdn.myanimelist.net/images/anime/12/63257.jpg" },
-      { name: "Sword Art Online: Alicization", image: "https://cdn.myanimelist.net/images/anime/9/101950.jpg" },
-      { name: "Black Clover", image: "https://cdn.myanimelist.net/images/anime/10/78768.jpg" },
-      { name: "The Rising of the Shield Hero", image: "https://cdn.myanimelist.net/images/anime/13/102450.jpg" },
-      { name: "Fruits Basket", image: "https://cdn.myanimelist.net/images/anime/14/106015.jpg" },
-      { name: "Kaguya-sama: Love is War", image: "https://cdn.myanimelist.net/images/anime/3/96212.jpg" },
-      { name: "The Promised Neverland", image: "https://cdn.myanimelist.net/images/anime/1795/102053.jpg" },
-      { name: "Toradora!", image: "https://cdn.myanimelist.net/images/anime/9/75835.jpg" },
-      { name: "Your Name", image: "https://cdn.myanimelist.net/images/anime/11/88268.jpg" },
-      { name: "Made in Abyss", image: "https://cdn.myanimelist.net/images/anime/6/88737.jpg" },
-      { name: "A Silent Voice", image: "https://cdn.myanimelist.net/images/anime/9/86500.jpg" },
-      { name: "Cowboy Bebop", image: "https://cdn.myanimelist.net/images/anime/6/27351.jpg" },
-      { name: "Psycho-Pass", image: "https://cdn.myanimelist.net/images/anime/7/67747.jpg" },
-      { name: "Violet Evergarden", image: "https://cdn.myanimelist.net/images/anime/1283/98190.jpg" },
-      { name: "Hellsing", image: "https://cdn.myanimelist.net/images/anime/4/47691.jpg" },
-      { name: "K-On!", image: "https://cdn.myanimelist.net/images/anime/8/79772.jpg" },
-      { name: "Clannad", image: "https://cdn.myanimelist.net/images/anime/6/45568.jpg" },
-      { name: "Angel Beats!", image: "https://cdn.myanimelist.net/images/anime/3/71145.jpg" },
-      { name: "Erased", image: "https://cdn.myanimelist.net/images/anime/7/82903.jpg" },
-      { name: "Trickster", image: "https://cdn.myanimelist.net/images/anime/5/84903.jpg" },
-      { name: "The Ancient Magus' Bride", image: "https://cdn.myanimelist.net/images/anime/2/86267.jpg" },
-      { name: "Parasyte", image: "https://cdn.myanimelist.net/images/anime/10/77442.jpg" },
-      { name: "Code Geass", image: "https://cdn.myanimelist.net/images/anime/7/12139.jpg" },
-      { name: "Mob Psycho 100 II", image: "https://cdn.myanimelist.net/images/anime/6/104304.jpg" },
-      { name: "Gurren Lagann", image: "https://cdn.myanimelist.net/images/anime/11/10315.jpg" }
-    ];
-
+    let animeList = []; // Liste des animes à remplir
     let currentIndex = 0;
     let rankings = new Array(10).fill(null); // Liste vide de 10 rangs à remplir
     let selectedAnimes = []; // Liste pour les animes choisis
+
+    // Charger les données depuis le fichier JSON
+    async function loadAnimes() {
+      const response = await fetch('top_animes.json');
+      if (response.ok) {
+        animeList = await response.json();
+      } else {
+        alert("Erreur lors du chargement des animes.");
+      }
+    }
 
     // Fonction pour tirer au hasard 10 animes
     function getRandomAnimes() {
@@ -138,8 +99,8 @@
     function displayAnime() {
       if (currentIndex < selectedAnimes.length) {
         const anime = selectedAnimes[currentIndex];
-        document.getElementById("anime-name").textContent = anime.name;
-        document.getElementById("anime-img").src = anime.image;
+        document.getElementById("anime-name").textContent = anime.title;
+        document.getElementById("anime-img").src = anime.image_url;
       } else {
         document.getElementById("rank-section").style.display = "none"; // Cache les boutons de classement
         document.getElementById("anime-container").innerHTML = "<h2>Classement terminé !</h2>";
@@ -155,7 +116,7 @@
       }
 
       // Attribuer le rang à cet anime
-      rankings[rank - 1] = selectedAnimes[currentIndex].name;
+      rankings[rank - 1] = selectedAnimes[currentIndex].title;
 
       // Désactiver le bouton de classement
       document.getElementById(`rank-${rank}`).disabled = true;
@@ -202,9 +163,11 @@
     }
 
     // Initialiser l'affichage du premier anime
-    startNewRanking();
+    window.onload = async function() {
+      await loadAnimes();  // Charger les animes depuis le fichier JSON
+      startNewRanking();   // Démarrer le classement
+    };
   </script>
 </body>
 </html>
-
 
