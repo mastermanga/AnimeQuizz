@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Classement des Animes</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; display: flex; }
     h1 { text-align: center; }
-    .anime-container { display: flex; flex-direction: column; align-items: center; }
+    .anime-container { display: flex; flex-direction: column; align-items: center; flex: 2; }
     .anime-item { 
       display: flex; 
       align-items: center; 
@@ -20,14 +20,23 @@
     }
     .anime-item img { width: 100px; height: 100px; margin-right: 15px; border-radius: 5px; }
     .anime-item p { font-size: 18px; margin: 0; }
-    .rank-button { margin-top: 20px; text-align: center; }
+    .rank-button { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+    .rank-button button { margin: 5px; padding: 10px 20px; font-size: 16px; }
     .ranking-input { width: 50px; padding: 5px; font-size: 16px; }
-    .anime-list { list-style-type: none; padding: 0; }
-    .anime-list li { padding: 5px; font-size: 16px; }
+    .anime-list { list-style-type: none; padding: 0; font-size: 16px; }
+    .anime-list li { padding: 5px; }
+    .ranking-container { margin-right: 20px; flex: 1; }
+    .ranking-container h2 { text-align: center; }
+    .ranking-container ul { padding-left: 0; }
   </style>
 </head>
 <body>
-  <h1>Classement des Animes</h1>
+  <div class="ranking-container">
+    <h2>Récapitulatif du Classement</h2>
+    <ul id="ranking-list" class="anime-list">
+      <!-- Les classements seront affichés ici -->
+    </ul>
+  </div>
 
   <div class="anime-container" id="anime-container">
     <div class="anime-item" id="anime-item">
@@ -37,16 +46,23 @@
     </div>
 
     <div id="rank-section">
-      <label for="rank-input">Attribuer un rang (1 à 10): </label>
-      <input type="number" id="rank-input" class="ranking-input" min="1" max="10" />
-      <button onclick="assignRank()">Attribuer</button>
+      <div class="rank-button">
+        <!-- 10 boutons de classement -->
+        <button id="rank-1" onclick="assignRank(1)">1</button>
+        <button id="rank-2" onclick="assignRank(2)">2</button>
+        <button id="rank-3" onclick="assignRank(3)">3</button>
+        <button id="rank-4" onclick="assignRank(4)">4</button>
+        <button id="rank-5" onclick="assignRank(5)">5</button>
+        <button id="rank-6" onclick="assignRank(6)">6</button>
+        <button id="rank-7" onclick="assignRank(7)">7</button>
+        <button id="rank-8" onclick="assignRank(8)">8</button>
+        <button id="rank-9" onclick="assignRank(9)">9</button>
+        <button id="rank-10" onclick="assignRank(10)">10</button>
+      </div>
     </div>
   </div>
 
-  <div id="result"></div>
-
   <div class="rank-button">
-    <button onclick="showRanking()">Voir le classement final</button>
     <button onclick="startNewRanking()">Nouveau classement</button>
   </div>
 
@@ -68,33 +84,42 @@
         const anime = animeList[currentIndex];
         document.getElementById("anime-name").textContent = anime.name;
         document.getElementById("anime-img").src = anime.img;
-        document.getElementById("rank-input").value = ''; // Réinitialise l'input
       } else {
-        document.getElementById("rank-section").style.display = "none"; // Cache le champ de classement
+        document.getElementById("rank-section").style.display = "none"; // Cache les boutons de classement
         document.getElementById("anime-container").innerHTML = "<h2>Classement terminé !</h2>";
       }
     }
 
-    function assignRank() {
-      const rank = document.getElementById("rank-input").value;
-      if (rank < 1 || rank > 10 || rankings[rank - 1] !== null) {
-        alert("Veuillez attribuer un rang valide entre 1 et 10, et chaque rang doit être unique.");
+    function assignRank(rank) {
+      if (rankings[rank - 1] !== null) {
+        alert("Ce rang a déjà été attribué !");
         return;
       }
 
       // Attribuer le rang à cet anime
       rankings[rank - 1] = animeList[currentIndex].name;
 
+      // Désactiver le bouton de classement
+      document.getElementById(`rank-${rank}`).disabled = true;
+
+      // Ajouter l'anime au récapitulatif
+      updateRankingList();
+
       currentIndex++; // Passer à l'anime suivant
       displayAnime(); // Afficher l'anime suivant
     }
 
-    function showRanking() {
-      const rankingDisplay = rankings.map((anime, index) => `<li>Rang ${index + 1}: ${anime}</li>`).join('');
-      document.getElementById("result").innerHTML = `<h2>Classement final</h2><ul class="anime-list">${rankingDisplay}</ul>`;
+    function updateRankingList() {
+      const rankingList = document.getElementById("ranking-list");
+      rankingList.innerHTML = ''; // Réinitialiser la liste
+
+      rankings.forEach((anime, index) => {
+        if (anime) {
+          rankingList.innerHTML += `<li>Rang ${index + 1}: ${anime}</li>`;
+        }
+      });
     }
 
-    // Fonction pour redémarrer un nouveau classement avec des animes différents
     function startNewRanking() {
       // Mélanger la liste des animes pour que ce soit aléatoire
       animeList = shuffle(animeList);
@@ -103,10 +128,17 @@
       currentIndex = 0;
       rankings = new Array(10).fill(null);
 
-      // Afficher le premier anime
+      // Réactiver les boutons
+      for (let i = 1; i <= 10; i++) {
+        document.getElementById(`rank-${i}`).disabled = false;
+      }
+
+      // Réinitialiser le récapitulatif du classement
+      updateRankingList();
+
+      // Réafficher le premier anime
       document.getElementById("rank-section").style.display = "block";
       displayAnime();
-      document.getElementById("result").innerHTML = ''; // Effacer le classement précédent
     }
 
     // Fonction pour mélanger aléatoirement la liste des animes
