@@ -47,10 +47,11 @@
 
   <div class="rank-button">
     <button onclick="showRanking()">Voir le classement final</button>
+    <button onclick="startNewRanking()">Nouveau classement</button>
   </div>
 
   <script>
-    const animeList = [
+    let animeList = [
       { name: "Naruto", img: "https://cdn.myanimelist.net/images/anime/11/731.jpg" },
       { name: "One Piece", img: "https://cdn.myanimelist.net/images/anime/6/732.jpg" },
       { name: "Attack on Titan", img: "https://cdn.myanimelist.net/images/anime/10/732.jpg" },
@@ -93,10 +94,35 @@
       document.getElementById("result").innerHTML = `<h2>Classement final</h2><ul class="anime-list">${rankingDisplay}</ul>`;
     }
 
+    // Fonction pour redémarrer un nouveau classement avec des animes différents
+    function startNewRanking() {
+      // Mélanger la liste des animes pour que ce soit aléatoire
+      animeList = shuffle(animeList);
+
+      // Réinitialiser les variables de classement
+      currentIndex = 0;
+      rankings = new Array(10).fill(null);
+
+      // Afficher le premier anime
+      document.getElementById("rank-section").style.display = "block";
+      displayAnime();
+      document.getElementById("result").innerHTML = ''; // Effacer le classement précédent
+    }
+
+    // Fonction pour mélanger aléatoirement la liste des animes
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Échanger les éléments
+      }
+      return array;
+    }
+
     // Initialiser l'affichage du premier anime
     displayAnime();
   </script>
 </body>
 </html>
+
 
 
