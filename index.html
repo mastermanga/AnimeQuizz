@@ -193,7 +193,7 @@
       if (currentIndex < selectedAnimes.length) {
         const anime = selectedAnimes[currentIndex];
         document.getElementById("anime-name").textContent = anime.title;
-        document.getElementById("anime-img").src = anime.image_url;
+        document.getElementById("anime-img").src = anime.image;
       } else {
         document.getElementById("rank-section").style.display = "none";
         document.getElementById("anime-item").style.display = "none";
@@ -223,7 +223,7 @@
           const anime = selectedAnimes.find(a => a.title === animeTitle);
           rankingList.innerHTML += `
             <li>
-              <img src="${anime.image_url}" alt="${anime.title}">
+              <img src="${anime.image}" alt="${anime.title}">
               <span>Rang ${index + 1}: ${anime.title}</span>
             </li>`;
         }
