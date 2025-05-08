@@ -58,6 +58,7 @@
       display: none;
       height: 100%;
       display: flex;
+      position: relative; /* Pour positionner le bouton Retour */
     }
 
     .anime-container {
@@ -204,6 +205,24 @@
       margin-bottom: 10px;
       object-fit: cover;
     }
+
+    #back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #2a2a2a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #back-btn:hover {
+      background-color: #3e3e3e;
+    }
   </style>
 </head>
 <body>
@@ -221,6 +240,7 @@
       <h2>Récapitulatif du Classement</h2>
       <ul id="ranking-list" class="anime-list"></ul>
     </div>
+    <button id="back-btn" onclick="backToMenu()">Retour</button>
 
     <div class="anime-container" id="anime-container">
       <div class="anime-item" id="anime-item">
@@ -360,6 +380,13 @@
       } else {
         document.querySelector(".ranking-container").style.display = "none"; // Masquer pour autres jeux
       }
+    }
+
+    function backToMenu() {
+      document.getElementById("ranking-game").style.display = "none";
+      document.getElementById("menu-screen").style.display = "flex";
+      document.querySelector(".ranking-container").style.display = "none"; // Masquer le récapitulatif
+      document.body.classList.remove("final-view"); // Réinitialiser la vue finale
     }
 
     window.onload = async function () {
