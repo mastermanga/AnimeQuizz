@@ -63,7 +63,7 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      margin-top: 20px;
+      margin-: 20px;
     }
 
     .rank-button button {
@@ -170,7 +170,7 @@
 
     async function loadAnimes() {
       try {
-        const response = await fetch('top_animes.json');
+        const response = await fetch('anime.json');
         if (!response.ok) throw new Error('Fichier introuvable');
         animeList = await response.json();
       } catch (error) {
