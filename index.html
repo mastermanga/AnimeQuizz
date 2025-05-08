@@ -52,8 +52,6 @@
       height: auto;
       border-radius: 15px;
       margin-bottom: 20px;
-      transition: opacity 0.3s ease;
-      opacity: 1;
     }
 
     .anime-item p {
@@ -149,7 +147,16 @@
     <div id="rank-section">
       <div class="rank-button">
         <!-- 10 boutons de classement -->
-        ${[...Array(10).keys()].map(i => `<button id="rank-${i+1}" onclick="assignRank(${i+1})">${i+1}</button>`).join('\n')}
+        <button id="rank-1" onclick="assignRank(1)">1</button>
+        <button id="rank-2" onclick="assignRank(2)">2</button>
+        <button id="rank-3" onclick="assignRank(3)">3</button>
+        <button id="rank-4" onclick="assignRank(4)">4</button>
+        <button id="rank-5" onclick="assignRank(5)">5</button>
+        <button id="rank-6" onclick="assignRank(6)">6</button>
+        <button id="rank-7" onclick="assignRank(7)">7</button>
+        <button id="rank-8" onclick="assignRank(8)">8</button>
+        <button id="rank-9" onclick="assignRank(9)">9</button>
+        <button id="rank-10" onclick="assignRank(10)">10</button>
       </div>
     </div>
   </div>
@@ -166,15 +173,9 @@
 
     async function loadAnimes() {
       try {
-        const cached = localStorage.getItem("animeCache");
-        if (cached) {
-          animeList = JSON.parse(cached);
-        } else {
-          const response = await fetch('anime_v2.json');
-          if (!response.ok) throw new Error('Fichier introuvable');
-          animeList = await response.json();
-          localStorage.setItem("animeCache", JSON.stringify(animeList));
-        }
+        const response = await fetch('anime_v2.json');
+        if (!response.ok) throw new Error('Fichier introuvable');
+        animeList = await response.json();
       } catch (error) {
         alert("Erreur lors du chargement du fichier JSON : " + error.message);
       }
@@ -182,15 +183,11 @@
 
     function getRandomAnimes() {
       selectedAnimes = [];
-      const usedIndexes = new Set();
-      while (selectedAnimes.length < 10 && usedIndexes.size < animeList.length) {
+      while (selectedAnimes.length < 10) {
         const randomIndex = Math.floor(Math.random() * animeList.length);
-        if (!usedIndexes.has(randomIndex)) {
-          usedIndexes.add(randomIndex);
-          const anime = animeList[randomIndex];
+        const anime = animeList[randomIndex];
+        if (!selectedAnimes.includes(anime)) {
           selectedAnimes.push(anime);
-          const img = new Image(); // préchargement
-          img.src = anime.image;
         }
       }
     }
@@ -198,16 +195,8 @@
     function displayAnime() {
       if (currentIndex < selectedAnimes.length) {
         const anime = selectedAnimes[currentIndex];
-        const imgEl = document.getElementById("anime-img");
-        imgEl.style.opacity = 0;
-
-        setTimeout(() => {
-          document.getElementById("anime-name").textContent = anime.title;
-          imgEl.src = anime.image;
-          imgEl.onload = () => {
-            imgEl.style.opacity = 1;
-          };
-        }, 100);
+        document.getElementById("anime-name").textContent = anime.title;
+        document.getElementById("anime-img").src = anime.image;
       } else {
         document.getElementById("rank-section").style.display = "none";
         document.getElementById("anime-item").style.display = "none";
@@ -271,4 +260,5 @@
   </script>
 </body>
 </html>
+
 
