@@ -48,10 +48,8 @@
     }
 
     .anime-item img {
-      width: 100%;
-      max-height: 600px;
-      object-fit: contain;
-      background-color: #000;
+      max-width: 100%;
+      height: auto;
       border-radius: 15px;
       margin-bottom: 20px;
     }
@@ -171,11 +169,12 @@
     let selectedAnimes = [];
 
     async function loadAnimes() {
-      const response = await fetch('top_animes.json');
-      if (response.ok) {
+      try {
+        const response = await fetch('top_animes.json');
+        if (!response.ok) throw new Error('Fichier introuvable');
         animeList = await response.json();
-      } else {
-        alert("Erreur lors du chargement des animes.");
+      } catch (error) {
+        alert("Erreur lors du chargement du fichier JSON : " + error.message);
       }
     }
 
