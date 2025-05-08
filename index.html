@@ -296,5 +296,63 @@
         return;
       }
 
-      rankings[rank - 1] = selectedAnimes[currentIndex].title
+      rankings[rank - 1] = selectedAnimes[currentIndex].title;
+      updateRankingList();
 
+      currentIndex++;
+      if (currentIndex < selectedAnimes.length) {
+        displayAnime();
+      }
+    }
+
+    function updateRankingList() {
+      const rankingList = document.getElementById("ranking-list");
+      rankingList.innerHTML = '';
+      rankings.forEach((anime, index) => {
+        if (anime !== null) {
+          const listItem = document.createElement('li');
+          listItem.innerHTML = `
+            <img src="${selectedAnimes[index].image}" alt="Anime">
+            <span>Rank ${index + 1}: ${anime}</span>
+          `;
+          rankingList.appendChild(listItem);
+        }
+      });
+    }
+
+    function startNewRanking() {
+      document.body.classList.remove("final-view");
+      getRandomAnimes();
+      currentIndex = 0;
+      rankings = new Array(10).fill(null);
+      updateRankingList();
+      document.getElementById("anime-item").style.display = "flex";
+      document.getElementById("rank-section").style.display = "block";
+      document.getElementById("new-ranking-btn").style.display = "none";
+      displayAnime();
+    }
+
+    function launchGame(gameId) {
+      document.getElementById("menu-screen").style.display = "none";
+
+      const allGames = ['ranking-game'];
+      allGames.forEach(id => {
+        const section = document.getElementById(id);
+        if (section) section.style.display = "none";
+      });
+
+      const selectedGame = document.getElementById(gameId);
+      if (selectedGame) selectedGame.style.display = "flex";
+
+      if (gameId === 'ranking-game') {
+        document.querySelector(".ranking-container").style.display = "block";
+        document.getElementById("anime-container").style.display = "flex";
+        startNewRanking();
+      }
+    }
+
+    // Charger les animes dès le début
+    loadAnimes();
+  </script>
+</body>
+</html>
