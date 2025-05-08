@@ -50,7 +50,8 @@
     .anime-item img {
       width: 100%;
       max-height: 600px;
-      object-fit: cover;
+      object-fit: contain;
+      background-color: #000;
       border-radius: 15px;
       margin-bottom: 20px;
     }
@@ -147,7 +148,7 @@
 
     <div id="rank-section">
       <div class="rank-button">
-        <!-- 10 boutons de classement -->
+        <!-- 7 boutons de classement -->
         <button id="rank-1" onclick="assignRank(1)">1</button>
         <button id="rank-2" onclick="assignRank(2)">2</button>
         <button id="rank-3" onclick="assignRank(3)">3</button>
@@ -155,9 +156,6 @@
         <button id="rank-5" onclick="assignRank(5)">5</button>
         <button id="rank-6" onclick="assignRank(6)">6</button>
         <button id="rank-7" onclick="assignRank(7)">7</button>
-        <button id="rank-8" onclick="assignRank(8)">8</button>
-        <button id="rank-9" onclick="assignRank(9)">9</button>
-        <button id="rank-10" onclick="assignRank(10)">10</button>
       </div>
     </div>
   </div>
@@ -169,7 +167,7 @@
   <script>
     let animeList = [];
     let currentIndex = 0;
-    let rankings = new Array(10).fill(null);
+    let rankings = new Array(7).fill(null);
     let selectedAnimes = [];
 
     async function loadAnimes() {
@@ -183,7 +181,7 @@
 
     function getRandomAnimes() {
       selectedAnimes = [];
-      while (selectedAnimes.length < 10) {
+      while (selectedAnimes.length < 7) {
         const randomIndex = Math.floor(Math.random() * animeList.length);
         const anime = animeList[randomIndex];
         if (!selectedAnimes.includes(anime)) {
@@ -236,9 +234,9 @@
     function startNewRanking() {
       getRandomAnimes();
       currentIndex = 0;
-      rankings = new Array(10).fill(null);
+      rankings = new Array(7).fill(null);
 
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= 7; i++) {
         document.getElementById(`rank-${i}`).disabled = false;
       }
 
@@ -260,5 +258,6 @@
   </script>
 </body>
 </html>
+
 
 
