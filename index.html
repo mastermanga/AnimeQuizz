@@ -285,7 +285,6 @@
           document.getElementById("rank-section").style.display = "none";
           document.getElementById("anime-item").style.display = "none";
           document.getElementById("new-ranking-btn").style.display = "block";
-          document.getElementById("ranking-list").style.display = "block"; // Afficher le récapitulatif ici
           document.body.classList.add("final-view");
         }
       }, 150); // délai léger pour plus de fluidité
@@ -353,10 +352,8 @@
       if (selectedGame) selectedGame.style.display = "flex";
 
       if (gameId === 'ranking-game') {
-        // Masquer le récapitulatif du classement au départ, il sera affiché dans la section "Classement des Animes"
         document.querySelector(".ranking-container").style.display = "block";
         document.getElementById("anime-container").style.display = "flex";
-        document.getElementById("ranking-list").style.display = "none"; // Cacher le récapitulatif ici
         startNewRanking();
       }
     }
