@@ -5,34 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Classement des Animes</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; display: flex; }
-    h1 { text-align: center; }
-    .anime-container { display: flex; flex-direction: column; align-items: center; flex: 2; }
-    .anime-item { 
-      display: flex; 
-      align-items: center; 
-      background: white; 
-      padding: 15px; 
-      margin: 10px; 
-      border-radius: 8px; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-      width: 60%;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .anime-item img { 
-      width: 200px; 
-      height: 200px; 
-      margin-right: 20px; 
-      border-radius: 10px; 
-      object-fit: cover; 
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #f0f0f0;
+      padding: 20px;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
-    .anime-item p { font-size: 18px; margin: 0; }
-    .rank-button { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
-    .rank-button button { margin: 5px; padding: 10px 20px; font-size: 16px; }
-    .anime-list { list-style-type: none; padding: 0; font-size: 16px; }
-    .anime-list li { padding: 5px; }
-    .ranking-container { margin-right: 20px; flex: 1; }
-    .ranking-container h2 { text-align: center; }
-    .ranking-container ul { padding-left: 0; }
+
+    h1, h2 {
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .anime-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 3;
+      overflow-y: auto;
+    }
+
+    .anime-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #1e1e1e;
+      padding: 30px;
+      margin: 10px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .anime-item img {
+      width: 100%;
+      max-height: 600px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .anime-item p {
+      font-size: 26px;
+      text-align: center;
+    }
+
+    .rank-button {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .rank-button button {
+      margin: 8px;
+      padding: 12px 24px;
+      font-size: 18px;
+      border: none;
+      background-color: #2a2a2a;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .rank-button button:hover {
+      background-color: #3e3e3e;
+    }
+
+    .rank-button button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+
+    .anime-list {
+      list-style-type: none;
+      padding: 0;
+      font-size: 16px;
+    }
+
+    .anime-list li {
+      padding: 10px;
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .anime-list img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+
+    .ranking-container {
+      margin-right: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    #new-ranking-btn {
+      background-color: #444;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #new-ranking-btn:hover {
+      background-color: #666;
+    }
   </style>
 </head>
 <body>
@@ -127,9 +225,8 @@
         if (animeTitle) {
           const anime = selectedAnimes.find(a => a.title === animeTitle);
           rankingList.innerHTML += `
-            <li style="display: flex; align-items: center; margin-bottom: 10px;">
-              <img src="${anime.image_url}" alt="${anime.title}" 
-                   style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+            <li>
+              <img src="${anime.image_url}" alt="${anime.title}">
               <span>Rang ${index + 1}: ${anime.title}</span>
             </li>`;
         }
@@ -163,4 +260,5 @@
   </script>
 </body>
 </html>
+
 
