@@ -148,6 +148,7 @@
       margin-right: 20px;
       flex: 1;
       overflow-y: auto;
+      display: none; /* Masquer par défaut */
     }
 
     #new-ranking-btn {
@@ -174,6 +175,7 @@
       width: 100%;
       margin: 0 auto;
       overflow: visible;
+      display: block; /* Afficher dans la vue finale */
     }
 
     .final-view #ranking-list {
@@ -352,9 +354,11 @@
       if (selectedGame) selectedGame.style.display = "flex";
 
       if (gameId === 'ranking-game') {
-        document.querySelector(".ranking-container").style.display = "block";
+        document.querySelector(".ranking-container").style.display = "block"; // Afficher le récapitulatif
         document.getElementById("anime-container").style.display = "flex";
         startNewRanking();
+      } else {
+        document.querySelector(".ranking-container").style.display = "none"; // Masquer pour autres jeux
       }
     }
 
