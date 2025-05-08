@@ -52,6 +52,12 @@
       height: auto;
       border-radius: 15px;
       margin-bottom: 20px;
+      transition: opacity 0.3s ease-in-out;
+      opacity: 1;
+    }
+
+    .anime-item img.fade {
+      opacity: 0;
     }
 
     .anime-item p {
@@ -131,7 +137,6 @@
       background-color: #666;
     }
 
-    /* === FINAL VIEW STYLES === */
     .final-view {
       flex-direction: column;
       align-items: center;
@@ -226,20 +231,30 @@
         const anime = animeList[randomIndex];
         if (!selectedAnimes.includes(anime)) {
           selectedAnimes.push(anime);
+          const img = new Image();
+          img.src = anime.image;
         }
       }
     }
 
     function displayAnime() {
+      const animeImg = document.getElementById("anime-img");
+      const animeName = document.getElementById("anime-name");
+
       if (currentIndex < selectedAnimes.length) {
         const anime = selectedAnimes[currentIndex];
-        document.getElementById("anime-name").textContent = anime.title;
-        document.getElementById("anime-img").src = anime.image;
+
+        animeImg.classList.add('fade');
+        animeImg.onload = () => animeImg.classList.remove('fade');
+
+        animeName.textContent = anime.title;
+        animeImg.src = anime.image;
+
       } else {
         document.getElementById("rank-section").style.display = "none";
         document.getElementById("anime-item").style.display = "none";
         document.getElementById("new-ranking-btn").style.display = "block";
-        document.body.classList.add("final-view"); // 👈 active la vue finale
+        document.body.classList.add("final-view");
       }
     }
 
@@ -253,7 +268,10 @@
       document.getElementById(`rank-${rank}`).disabled = true;
       updateRankingList();
       currentIndex++;
-      displayAnime();
+
+      setTimeout(() => {
+        displayAnime();
+      }, 100); // petit délai pour la fluidité
     }
 
     function updateRankingList() {
@@ -276,7 +294,7 @@
       getRandomAnimes();
       currentIndex = 0;
       rankings = new Array(10).fill(null);
-      document.body.classList.remove("final-view"); // 👈 désactive la vue finale
+      document.body.classList.remove("final-view");
 
       for (let i = 1; i <= 10; i++) {
         document.getElementById(`rank-${i}`).disabled = false;
@@ -299,5 +317,3 @@
   </script>
 </body>
 </html>
-
-
